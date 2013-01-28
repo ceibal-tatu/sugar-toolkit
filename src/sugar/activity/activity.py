@@ -505,12 +505,7 @@ class Activity(Window, gtk.Container):
         self.move(0, 0)
 
     def _adapt_window_to_screen(self):
-        screen = gtk.gdk.screen_get_default()
-        self.set_geometry_hints(None,
-                                screen.get_width(), screen.get_height(),
-                                screen.get_width(), screen.get_height(),
-                                screen.get_width(), screen.get_height(),
-                                1, 1, 1, 1)
+        return
 
     def __session_quit_requested_cb(self, session):
         self._quit_requested = True
