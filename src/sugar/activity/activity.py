@@ -505,7 +505,8 @@ class Activity(Window, gtk.Container):
         self.move(0, 0)
 
     def _adapt_window_to_screen(self):
-        return
+        screen = gtk.gdk.screen_get_default()
+        self.resize(screen.get_width(), screen.get_height())
 
     def __session_quit_requested_cb(self, session):
         self._quit_requested = True
