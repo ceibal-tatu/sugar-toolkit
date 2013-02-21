@@ -100,6 +100,13 @@ J_DBUS_INTERFACE = 'org.laptop.Journal'
 CONN_INTERFACE_ACTIVITY_PROPERTIES = 'org.laptop.Telepathy.ActivityProperties'
 
 
+gconf_client  = gconf.client_get_default()
+GCONF_FOR_ACTIVITIES_NOT_REQUIRING_OSK_ACCUMULATION = \
+        gconf_client.get('/desktop/sugar/activities_not_requiring_osk_accumulation')
+ACTIVITIES_NOT_REQUIRING_OSK_ACCUMULATION = \
+        GCONF_FOR_ACTIVITIES_NOT_REQUIRING_OSK_ACCUMULATION.get_list()
+
+
 class _ActivitySession(gobject.GObject):
 
     __gsignals__ = {
@@ -505,12 +512,21 @@ class Activity(Window, gtk.Container):
         self.move(0, 0)
 
     def _adapt_window_to_screen(self):
+        for activity in ACTIVITIES_NOT_REQUIRING_OSK_ACCUMULATION:
+            if self.get_bundle_id() == activity.get_string():
+                screen = gtk.gdk.screen_get_default()
+                self.set_geometry_hints(None,
+                                        screen.get_width(), screen.get_height(),
+                                        screen.get_width(), screen.get_height(),
+                                        screen.get_width(), screen.get_height(),
+                                        1, 1, 1, 1)
+                return
+
+        # If we reached here, the activity did not match in the above
+        # loop. Thus, make this activity's window capable of handling
+        # OSK.
         screen = gtk.gdk.screen_get_default()
-        self.set_geometry_hints(None,
-                                screen.get_width(), screen.get_height(),
-                                screen.get_width(), screen.get_height(),
-                                screen.get_width(), screen.get_height(),
-                                1, 1, 1, 1)
+        self.resize(screen.get_width(), screen.get_height())
 
     def __session_quit_requested_cb(self, session):
         self._quit_requested = True
