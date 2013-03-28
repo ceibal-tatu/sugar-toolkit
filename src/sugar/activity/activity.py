@@ -756,17 +756,17 @@ class Activity(Window, gtk.Container):
         else:
             self._jobject.metadata['share-scope'] = SCOPE_NEIGHBORHOOD
 
-        def _inhibit_suspend(self):
-            if not os.path.exists(POWERD_INHIBIT_DIR):
-                return
+    def _inhibit_suspend(self):
+        if not os.path.exists(POWERD_INHIBIT_DIR):
+            return
 
-            path = os.path.join(POWERD_INHIBIT_DIR, str(os.getpid()))
-            try:
-                fd = open(path, 'w')
-            except IOError:
-                logging.error("Inhibit Suspend: Could not create file %s", path)
-            else:
-                fd.close()
+        path = os.path.join(POWERD_INHIBIT_DIR, str(os.getpid()))
+        try:
+            fd = open(path, 'w')
+        except IOError:
+            logging.error("Inhibit Suspend: Could not create file %s", path)
+        else:
+            fd.close()
 
     def __joined_cb(self, activity, success, err):
         """Callback when join has finished"""
