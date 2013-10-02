@@ -283,6 +283,10 @@ class Window(gtk.Window):
     enable_fullscreen_mode = gobject.property(type=object,
         setter=set_enable_fullscreen_mode, getter=get_enable_fullscreen_mode)
 
+    # Activities should never set this to false
+    def set_resizable(ignore=None, this=None):
+        return
+
     # DEPRECATED
 
     def set_toolbox(self, toolbar_box):
